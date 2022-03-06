@@ -1,31 +1,52 @@
-// action
-// {
-//   type: "ADD_TODO",
-//   todo: {
-//     id:0,
-//     name: "Learn Redux",
-//     complete: false
-//   }
-// }
+const ADD_TODO = "ADD_TODO";
+const REMOVE_TODO = "REMOVE_TODO";
+const TOGGLE_TODO = "TOGGLE_TODO";
+const ADD_GOAL = "ADD_GOAL";
+const REMOVE_GOAL = "REMOVE_GOAL";
 
-// {
-//   type: "REMOVE_TODO",
-//   id:0,
-// }
+function addTodoAction(todo) {
+  return {
+    type: ADD_TODO,
+    todo,
+  };
+}
 
-// {
-//   type:"TOGGLE_TODO",
-//   id:0,
-// }
+function removeTodoAction(id) {
+  return {
+    type: REMOVE_TODO,
+    id,
+  };
+}
+
+function toggleTodoAction(id) {
+  return {
+    type: TOGGLE_TODO,
+    id,
+  };
+}
+
+function addGoalAction(goal) {
+  return {
+    type: ADD_GOAL,
+    goal,
+  };
+}
+
+function removeGoalAction(id) {
+  return {
+    type: REMOVE_GOAL,
+    id,
+  };
+}
 
 // reducer
 function todos(state = [], action) {
   switch (action.type) {
-    case "ADD_TODO":
+    case ADD_TODO:
       return state.concat([action.todo]);
-    case "REMOVE_TODO":
+    case REMOVE_TODO:
       return state.filter((todo) => todo.id !== action.id);
-    case "TOGGLE_TODO":
+    case TOGGLE_TODO:
       return state.map((todo) =>
         todo.id !== action.id
           ? todo
@@ -53,9 +74,9 @@ function todos(state = [], action) {
 
 function goals(state = [], action) {
   switch (action.type) {
-    case "ADD_GOAL":
+    case ADD_GOAL:
       return state.concat([action.goal]);
-    case "REMOVE_GOAL":
+    case REMOVE_GOAL:
       return state.filter((goal) => goal.id !== action.id);
     default:
       return state;
@@ -101,4 +122,67 @@ function createStore() {
   };
 }
 
+// Dom Code
+
+function generateId() {
+  return (
+    Math.random().toString(36).substring(2) + new Date().getTime().toString(36)
+  );
+}
+function addTodo() {
+  const input = document.getElementById("todo");
+  const name = input.value;
+  input.value = "";
+
+  store.dispatch(
+    addTodoAction({
+      id: generateId(),
+      name,
+      complete: false,
+    })
+  );
+}
+
+function addGoal() {
+  const input = document.getElementById("goal");
+  const name = input.value;
+  input.value = "";
+
+  store.dispatch(
+    addGoalAction({
+      id: generateId(),
+      name,
+    })
+  );
+}
+
+document.getElementById("todoBtn").addEventListener("click", addTodo);
+document.getElementById("goalBtn").addEventListener("click", addGoal);
+//
 const store = createStore(app);
+
+store.subscribe(() => {
+  const { goals, todos } = store.getState();
+
+  document.getElementById("todos").innerHTML = "";
+  document.getElementById("goals").innerHTML = "";
+
+  todos.forEach(addTodoDOM);
+  goals.forEach(addGolDOM);
+});
+
+function addTodoDOM(todo) {
+  const node = document.createElement("li");
+  const text = document.createTextNode(todo.name);
+  node.appendChild(text);
+
+  document.getElementById("todos").appendChild(node);
+}
+
+function addGolDOM(goal) {
+  const node = document.createElement("li");
+  const text = document.createTextNode(goal.name);
+  node.appendChild(text);
+
+  document.getElementById("goals").appendChild(node);
+}
