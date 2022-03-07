@@ -5,6 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
     <title>Redux</title>
   </head>
   <body>
@@ -12,17 +21,22 @@
       <div class="todo">
         <h1>Todo List</h1>
         <input type="text" id="todo" placeholder="Add Todo ..." />
-        <button id="todoBtn">Add Todo</button>
-        <ul id="todos"></ul>
+        <button id="todoBtn" class="btn">Add Todo</button>
+        <ul id="todos" class="todos"></ul>
       </div>
       <div class="goal">
         <h1>Goal List</h1>
         <input type="text" id="goal" placeholder="Add Goal ..." />
-        <button id="goalBtn">Add Goal</button>
-        <ul id="goals"></ul>
+        <button id="goalBtn" class="btn">Add Goal</button>
+        <ul id="goals" class="goals"></ul>
       </div>
     </div>
-
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/redux/5.0.0-alpha.0/redux.min.js"
+      integrity="sha512-6WJ7yVV5HDZwZ0RT5CM3FCTgTt5qC5BlfQ9bG43y0BowT5a3GXQqDYaoZgCk+i9vuB1Yj6KdBPQAU8Ra7tV32w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
     <script src="./index.js"></script>
   </body>
 </html>
