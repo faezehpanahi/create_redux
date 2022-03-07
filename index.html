@@ -5,14 +5,30 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./style.css" />
-    <link rel="stylesheet" href="
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-      integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/react/18.0.0-rc.1-next-cb1e7b1c6-20220303/umd/react.production.min.js"
+      integrity="sha512-xCjhDD7TPDtKihsJ0RE42v1bT3RhxGaxjdbQIeQenTFvXsc7Ovp0L4umjmlwFo2+9gXDSrdN/o6o27lRztLaIw=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
-    />
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.0.0-rc.1-next-cb1e7b1c6-20220303/umd/react-dom.production.min.js"
+      integrity="sha512-X95TLN6pBswynLBYU5gAsH0PR18ZWsyPyYaaEamBrI9/mI46OGePf+WLkl+C/Bmz3gdIb6LSzWH7TNzWhWpAhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"
+      integrity="sha512-kp7YHLxuJDJcOzStgd6vtpxr4ZU9kjn77e6dBsivSz+pUuAuMlE2UTdKB7jjsWT84qbS8kdCWHPETnP/ctrFsA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/redux/5.0.0-alpha.0/redux.min.js"
+      integrity="sha512-6WJ7yVV5HDZwZ0RT5CM3FCTgTt5qC5BlfQ9bG43y0BowT5a3GXQqDYaoZgCk+i9vuB1Yj6KdBPQAU8Ra7tV32w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
 
     <title>Redux</title>
   </head>
@@ -31,12 +47,270 @@
         <ul id="goals" class="goals"></ul>
       </div>
     </div>
-    <script
+    <div id="app"></div>
+
+    <!-- <script
       src="https://cdnjs.cloudflare.com/ajax/libs/redux/5.0.0-alpha.0/redux.min.js"
       integrity="sha512-6WJ7yVV5HDZwZ0RT5CM3FCTgTt5qC5BlfQ9bG43y0BowT5a3GXQqDYaoZgCk+i9vuB1Yj6KdBPQAU8Ra7tV32w=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
-    ></script>
-    <script src="./index.js"></script>
+    ></script> -->
+    <script>
+      const ADD_TODO = "ADD_TODO";
+      const REMOVE_TODO = "REMOVE_TODO";
+      const TOGGLE_TODO = "TOGGLE_TODO";
+      const ADD_GOAL = "ADD_GOAL";
+      const REMOVE_GOAL = "REMOVE_GOAL";
+
+      function addTodoAction(todo) {
+        return {
+          type: ADD_TODO,
+          todo,
+        };
+      }
+
+      function removeTodoAction(id) {
+        return {
+          type: REMOVE_TODO,
+          id,
+        };
+      }
+
+      function toggleTodoAction(id) {
+        return {
+          type: TOGGLE_TODO,
+          id,
+        };
+      }
+
+      function addGoalAction(goal) {
+        return {
+          type: ADD_GOAL,
+          goal,
+        };
+      }
+
+      function removeGoalAction(id) {
+        return {
+          type: REMOVE_GOAL,
+          id,
+        };
+      }
+
+      // const checker = (store) => (next) => (action) => {
+      //   if (
+      //     action.type === ADD_TODO &&
+      //     action.todo.name.toLowerCase().indexOf("bitcoin") !== -1
+      //   ) {
+      //     return alert("No, I think this is bad idea.");
+      //   }
+      //   if (
+      //     action.type === ADD_GOAL &&
+      //     action.todo.name.toLowerCase().indexOf("bitcoin") !== -1
+      //   ) {
+      //     return alert("No, I think this is bad idea.");
+      //   }
+      //   return next(action);
+      // };
+
+      // const logger = (store) => (next) => (action) => {
+      //   console.log(action.type);
+      //   console.log("the action: ", action);
+      //   const result = next(action); // == dispatch(action)
+      //   console.log("the new state", store.getState());
+      //   console.groupEnd();
+      //   return result;
+      // };
+
+      // reducer
+      function todos(state = [], action) {
+        switch (action.type) {
+          case ADD_TODO:
+            return state.concat([action.todo]);
+          case REMOVE_TODO:
+            return state.filter((todo) => todo.id !== action.id);
+          case TOGGLE_TODO:
+            return state.map((todo) =>
+              todo.id !== action.id
+                ? todo
+                : Object.assign({}, todo, { complete: !todo.complete })
+            );
+          default:
+            return state;
+        }
+      }
+
+      function goals(state = [], action) {
+        switch (action.type) {
+          case ADD_GOAL:
+            return state.concat([action.goal]);
+          case REMOVE_GOAL:
+            return state.filter((goal) => goal.id !== action.id);
+          default:
+            return state;
+        }
+      }
+
+      function generateId() {
+        return (
+          Math.random().toString(36).substring(2) +
+          new Date().getTime().toString(36)
+        );
+      }
+      function addTodo() {
+        const input = document.getElementById("todo");
+        const name = input.value;
+        input.value = "";
+
+        store.dispatch(
+          addTodoAction({
+            id: generateId(),
+            name,
+            complete: false,
+          })
+        );
+      }
+
+      function addGoal() {
+        const input = document.getElementById("goal");
+        const name = input.value;
+        input.value = "";
+
+        store.dispatch(
+          addGoalAction({
+            id: generateId(),
+            name,
+          })
+        );
+      }
+
+      document.getElementById("todoBtn").addEventListener("click", addTodo);
+      document.getElementById("goalBtn").addEventListener("click", addGoal);
+      //
+      const store = Redux.createStore(
+        Redux.combineReducers({
+          todos,
+          goals,
+        })
+      );
+
+      store.subscribe(() => {
+        const { goals, todos } = store.getState();
+
+        document.getElementById("todos").innerHTML = "";
+        document.getElementById("goals").innerHTML = "";
+
+        todos.forEach(addTodoDOM);
+        goals.forEach(addGolDOM);
+      });
+
+      function createRemoveButton(onClick) {
+        const removeBtn = document.createElement("button");
+        removeBtn.classList.add("trash");
+        removeBtn.innerHTML =
+          '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Pro 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M135.2 17.69C140.6 6.848 151.7 0 163.8 0H284.2C296.3 0 307.4 6.848 312.8 17.69L320 32H416C433.7 32 448 46.33 448 64C448 81.67 433.7 96 416 96H32C14.33 96 0 81.67 0 64C0 46.33 14.33 32 32 32H128L135.2 17.69zM31.1 128H416V448C416 483.3 387.3 512 352 512H95.1C60.65 512 31.1 483.3 31.1 448V128zM111.1 208V432C111.1 440.8 119.2 448 127.1 448C136.8 448 143.1 440.8 143.1 432V208C143.1 199.2 136.8 192 127.1 192C119.2 192 111.1 199.2 111.1 208zM207.1 208V432C207.1 440.8 215.2 448 223.1 448C232.8 448 240 440.8 240 432V208C240 199.2 232.8 192 223.1 192C215.2 192 207.1 199.2 207.1 208zM304 208V432C304 440.8 311.2 448 320 448C328.8 448 336 440.8 336 432V208C336 199.2 328.8 192 320 192C311.2 192 304 199.2 304 208z"/></svg>';
+        removeBtn.addEventListener("click", onClick);
+        return removeBtn;
+      }
+
+      function addTodoDOM(todo) {
+        const node = document.createElement("li");
+        const text = document.createTextNode(todo.name);
+
+        const removeBtn = createRemoveButton(() => {
+          store.dispatch(removeTodoAction(todo.id));
+        });
+
+        node.appendChild(text);
+        node.appendChild(removeBtn);
+
+        node.style.textDecoration = todo.complete ? "line-through" : "none";
+        node.addEventListener("click", () => {
+          store.dispatch(toggleTodoAction(todo.id));
+        });
+
+        document.getElementById("todos").appendChild(node);
+      }
+
+      function addGolDOM(goal) {
+        const node = document.createElement("li");
+        const text = document.createTextNode(goal.name);
+
+        const removeBtn = createRemoveButton(() => {
+          store.dispatch(removeGoalAction(goal.id));
+        });
+
+        node.appendChild(text);
+        node.appendChild(removeBtn);
+
+        document.getElementById("goals").appendChild(node);
+      }
+    </script>
+
+    <script type="text/babel">
+      class List extends React.Component {
+        render() {
+          return (
+            <ul>
+              <li>List</li>
+            </ul>
+          );
+        }
+      }
+
+      class Todos extends React.Component {
+        addItem = (e) => {
+          e.preventDefault();
+          const name = this.input.value;
+          this.input.value = "";
+
+          this.props.store.dispatch(
+            addTodoAction({
+              id: generateId,
+              name,
+              complete: false,
+            })
+          );
+        };
+
+        render() {
+          return (
+            <div>
+              <h1>Todo List</h1>
+              <input
+                type="text"
+                placeholder="Add Todo"
+                ref={(input) => (this.input = input)}
+              />
+              <button onClick={this.addItem}>Add Todo</button>
+              <List />
+            </div>
+          );
+        }
+      }
+
+      class Goals extends React.Component {
+        render() {
+          return (
+            <div>
+              Goals
+              <List />
+            </div>
+          );
+        }
+      }
+
+      class App extends React.Component {
+        render() {
+          return (
+            <div>
+              <Todos store={this.props.store} />
+              <Goals store={this.props.store} />
+            </div>
+          );
+        }
+      }
+      ReactDOM.render(<App store={store} />, document.getElementById("app"));
+    </script>
   </body>
 </html>
